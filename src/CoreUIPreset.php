@@ -76,6 +76,8 @@ class CoreUIPreset extends Preset
      */
     protected static function updateBootstrapping()
     {
+        (new Filesystem())->ensureDirectoryExists(resource_path('assets/coreui/js'));
+
         copy(__DIR__ . '/../coreui-stubs/bootstrap/coreui.js', resource_path('assets/coreui/js/coreui.js'));
     }
 
