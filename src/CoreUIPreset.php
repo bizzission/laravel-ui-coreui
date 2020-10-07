@@ -54,7 +54,7 @@ class CoreUIPreset extends Preset
      */
     protected static function updateSass()
     {
-        (new Filesystem())->ensureDirectoryExists(resource_path('sass'));
+        (new Filesystem())->ensureDirectoryExists(resource_path('assets/coreui/sass'));
 
         copy(__DIR__ . '/../coreui-stubs/bootstrap/coreui.scss', resource_path('assets/coreui/sass/coreui.scss'));
     }
