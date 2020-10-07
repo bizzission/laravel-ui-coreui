@@ -30,14 +30,12 @@ class CoreUIPreset extends Preset
     protected static function updatePackageArray(array $packages)
     {
         return [
-            'bootstrap'      => '^4.1.0',
-            'jquery'         => '^3.2',
-            'popper.js'      => '^1.12',
-            'sass'           => '^1.15.2',
-            'sass-loader'    => '^8.0.0',
-            '@coreui/coreui' => '^3.2.2',
-            '@coreui/icons'  => '^1.0.1',
-        ] + $packages;
+                'jquery' => '^3.5.1',
+                '@coreui/coreui' => '^3.3.0',
+                '@coreui/icons' => '^1.0.1',
+                "@popperjs/core" => "^2.4.4",
+                "perfect-scrollbar" => "^1.5.0",
+            ] + $packages;
     }
 
     public function install()
@@ -58,7 +56,7 @@ class CoreUIPreset extends Preset
     {
         (new Filesystem())->ensureDirectoryExists(resource_path('sass'));
 
-        copy(__DIR__.'/../coreui-stubs/bootstrap/app.scss', resource_path('sass/app.scss'));
+        copy(__DIR__ . '/../coreui-stubs/bootstrap/coreui.scss', resource_path('assets/coreui/sass/coreui.scss'));
     }
 
     /**
@@ -68,7 +66,7 @@ class CoreUIPreset extends Preset
      */
     protected static function updateWebpackConfiguration()
     {
-        copy(__DIR__.'/../coreui-stubs/bootstrap/webpack.mix.js', base_path('webpack.mix.js'));
+        copy(__DIR__ . '/../coreui-stubs/bootstrap/webpack.mix.js', base_path('webpack.mix.js'));
     }
 
     /**
@@ -78,8 +76,7 @@ class CoreUIPreset extends Preset
      */
     protected static function updateBootstrapping()
     {
-        copy(__DIR__.'/../coreui-stubs/bootstrap/bootstrap.js', resource_path('js/bootstrap.js'));
-        copy(__DIR__.'/../coreui-stubs/bootstrap/app.js', resource_path('js/app.js'));
+        copy(__DIR__ . '/../coreui-stubs/bootstrap/coreui.js', resource_path('assets/coreui/js/coreui.js'));
     }
 
     public function installAuth()
@@ -94,16 +91,16 @@ class CoreUIPreset extends Preset
 
     protected function ensureDirectoriesExist($viewsPath)
     {
-        if (!file_exists($viewsPath.'layouts')) {
-            mkdir($viewsPath.'layouts', 0755, true);
+        if (!file_exists($viewsPath . 'layouts')) {
+            mkdir($viewsPath . 'layouts', 0755, true);
         }
 
-        if (!file_exists($viewsPath.'auth')) {
-            mkdir($viewsPath.'auth', 0755, true);
+        if (!file_exists($viewsPath . 'auth')) {
+            mkdir($viewsPath . 'auth', 0755, true);
         }
 
-        if (!file_exists($viewsPath.'auth/passwords')) {
-            mkdir($viewsPath.'auth/passwords', 0755, true);
+        if (!file_exists($viewsPath . 'auth/passwords')) {
+            mkdir($viewsPath . 'auth/passwords', 0755, true);
         }
     }
 
@@ -119,7 +116,7 @@ class CoreUIPreset extends Preset
             ->each(function (SplFileInfo $file) use ($filesystem) {
                 $filesystem->copy(
                     $file->getPathname(),
-                    app_path('Http/Controllers/Auth/'.Str::replaceLast('.stub', '.php', $file->getFilename()))
+                    app_path('Http/Controllers/Auth/' . Str::replaceLast('.stub', '.php', $file->getFilename()))
                 );
             });
     }
@@ -135,15 +132,15 @@ class CoreUIPreset extends Preset
         );
 
         tap(new Filesystem(), function ($filesystem) {
-            $filesystem->copyDirectory(__DIR__.'/../coreui-stubs/auth', resource_path('views/auth'));
-            $filesystem->copyDirectory(__DIR__.'/../coreui-stubs/layouts', resource_path('views/layouts'));
-            $filesystem->copy(__DIR__.'/../coreui-stubs/home.blade.php', resource_path('views/home.blade.php'));
+            $filesystem->copyDirectory(__DIR__ . '/../coreui-stubs/auth', resource_path('views/auth'));
+            $filesystem->copyDirectory(__DIR__ . '/../coreui-stubs/layouts', resource_path('views/layouts'));
+            $filesystem->copy(__DIR__ . '/../coreui-stubs/home.blade.php', resource_path('views/home.blade.php'));
 
             collect($filesystem->allFiles(base_path('vendor/laravel/ui/stubs/migrations')))
                 ->each(function (SplFileInfo $file) use ($filesystem) {
                     $filesystem->copy(
                         $file->getPathname(),
-                        database_path('migrations/'.$file->getFilename())
+                        database_path('migrations/' . $file->getFilename())
                     );
                 });
         });
